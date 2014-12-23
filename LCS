@@ -1,0 +1,390 @@
+package lcs;
+
+import java.util.ArrayList;
+
+public class lcs {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		int num=4;
+		ArrayList time1=new ArrayList();
+		ArrayList time2=new ArrayList();
+		while(num<10){
+			radomstring r1=new radomstring();
+			radomstring r2=new radomstring();
+			radomstring r3=new radomstring();
+			String s1=r1.getRandomString(num);
+			String s2=r2.getRandomString(num);
+			String s3=r3.getRandomString(num);
+			System.out.println("r1:"+s1);
+			System.out.println("r2:"+s2);
+			System.out.println("r3:"+s3);
+			long runt1=System.currentTimeMillis();
+			getThreeLCSMatrixByDyna str=new getThreeLCSMatrixByDyna(s1,s2,s3);
+			System.out.println("动态规划三个字符串公共子序列r1+r2+r3："+str.getThreeLCS(s1, num, num)+" 执行时间："+(System.currentTimeMillis()-runt1)+"ms");
+			long runt2=System.currentTimeMillis();
+			getTwoLCSMatrixByDyna str2=new getTwoLCSMatrixByDyna(s1,s2);
+			System.out.println("动态规划两个字符串公共子序列r1+r2："+str2.getTwoLCS(s1,num)+" 执行时间："+(System.currentTimeMillis()-runt2)+"ms");
+			time1.add((System.currentTimeMillis()-runt2));
+			long runt3=System.currentTimeMillis();
+			diguiThree str3=new diguiThree(s1,s2);
+			System.out.println("递归两个字符串公共子序列r1+r2："+str3.gets()+" 执行时间："+(System.currentTimeMillis()-runt3)+"ms");
+			time2.add((System.currentTimeMillis()-runt3));
+			long runt4=System.currentTimeMillis();
+			diguiTwo str4=new diguiTwo(s1,s2,s3);
+			System.out.println("递归三个字符串公共子序列r1+r2+r3："+str4.gets()+" 执行时间："+(System.currentTimeMillis()-runt4)+"ms");
+			num++;
+		}
+		System.out.println(time1);
+		System.out.println(time2);
+	}
+
+}
+
+
+package lcs;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+public class diguiThree {
+    int lena=0;
+    int lenb=0;
+    int count=0;
+    Set<Integer> s=new HashSet<Integer>();
+    char[] a;
+    char[] b;
+    public diguiThree(String A,String B){
+//    	System.out.println("Digui");
+    	a=new char[A.length()];
+    	b=new char[B.length()];
+    	lena=A.length();
+    	lenb=B.length();
+    	for(int i=0;i<A.length();i++){
+    		a[i]=A.charAt(i);
+    	}
+    	for(int i=0;i<B.length();i++){
+    		b[i]=B.charAt(i);
+    	}
+    	count=LCS(0,0);
+    }
+	int LCS(int i,int j)
+	{
+//		System.out.println("LCS"+i+" "+j);
+//		System.out.println("LCS:"+a[i]+" "+b[j]);
+	    if(i>=lena || j>=lenb)
+	        return 0;
+	    else if(a[i]==b[j]){
+	    	s.add(i);
+//	    	System.out.print(a[i]);
+	    	return 1+LCS(i+1,j+1);
+	    }
+	  	    else if(LCS(i+1,j)>LCS(i,j+1)){
+	    	return LCS(i+1,j);	
+	    }
+	    else   return LCS(i,j+1);
+	}
+	public int gets(){
+//		String re = "";
+//		System.out.println("s:"+s);
+//		Iterator<Integer> it=s.iterator();
+//		while(it.hasNext()){
+//			re+=a[it.next()];
+//		}
+//		return re;
+		return count;
+	}
+}
+
+
+package lcs;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+public class diguiTwo {
+    int lena=0;
+    int lenb=0;
+    int lenc=0;
+    int count=0;
+    Set<Integer> s=new HashSet<Integer>();
+    char[] a;
+    char[] b;
+    char[] c;
+    public diguiTwo(String A,String B,String C){
+//    	System.out.println("Digui");
+    	a=new char[A.length()];
+    	b=new char[B.length()];
+    	c=new char[C.length()];
+    	lena=A.length();
+    	lenb=B.length();
+    	lenc=C.length();
+    	for(int i=0;i<A.length();i++){
+    		a[i]=A.charAt(i);
+    	}
+    	for(int i=0;i<B.length();i++){
+    		b[i]=B.charAt(i);
+    	}
+    	for(int i=0;i<C.length();i++){
+    		c[i]=C.charAt(i);
+    	}
+    	count=LCS(0,0,0);
+    }
+	int LCS(int i,int j,int k)
+	{
+//		System.out.println("LCS:"+a[i]+" "+b[j]+" "+c[k]);
+	    if(i>=lena || j>=lenb|| k>=lenc)
+	        return 0;
+	    else if(a[i]==b[j]&&b[j]==c[k]){
+	    	s.add(i);
+//	    	System.out.print(a[i]);
+	    	return 1+LCS(i+1,j+1,k+1);
+	    }
+	  	    else if(LCS(i+1,j,k)>LCS(i,j+1,k)&&LCS(i+1,j,k)>LCS(i,j,k+1)){
+	    	return LCS(i+1,j,k);	
+	    }
+	  	    else if(LCS(i,j+1,k)>LCS(i+1,j,k)&&LCS(i,j+1,k)>LCS(i,j,k+1)){
+		    	return LCS(i,j+1,k);	
+		    }
+	        else return LCS(i,j,k+1);
+	}
+	public int gets(){
+//		String re = "";
+//
+//		
+//		Iterator<Integer> it=s.iterator();
+//		while(it.hasNext()){
+//			
+//			re+=a[it.next()];
+//		}
+//		return re;
+		return count;
+	}
+}
+
+
+package lcs;
+
+import java.util.Stack;
+
+public class getThreeLCSMatrixByDyna {
+	int threeDynaM[][][];
+	int threeDynaC[][][];//记录走向(i,j,k),0是(i-1,j,k)，1是(i,j-1,k)，2是(i,j,k-1),3是(i-1,j-1,k-1)
+	//求解三维的字符串的矩阵
+	public getThreeLCSMatrixByDyna(String A,String B,String C){
+			threeDynaM = new int[A.length()+1][B.length()+1][C.length()+1];
+			threeDynaC = new int[A.length()+1][B.length()+1][C.length()+1];
+			int index;
+			for(int i=0;i<=A.length();i++){//初始化
+				for(int j=0;j<=B.length();j++){
+					for(int k=0;k<=C.length();k++){
+						threeDynaM[i][j][k] = 0;
+						threeDynaC[i][j][k] = -1;
+					}
+				}
+			}
+			for(int i=1;i<=A.length();i++){
+				for(int j=1;j<=B.length();j++){
+					for(int k=1;k<=C.length();k++){
+						if(A.charAt(i-1) == B.charAt(j-1)&& B.charAt(j-1) == C.charAt(k-1)){
+							threeDynaM[i][j][k] = threeDynaM[i-1][j-1][k-1]+1;
+							threeDynaC[i][j][k] = 3;
+						}else{
+							index = getMaxIndex(threeDynaM[i-1][j][k], threeDynaM[i][j-1][k], threeDynaM[i][j][k-1]);
+							switch(index){
+								case 0:
+									threeDynaM[i][j][k] = threeDynaM[i-1][j][k];
+									threeDynaC[i][j][k] = 0;
+									break;
+								case 1:
+									threeDynaM[i][j][k] = threeDynaM[i][j-1][k];
+									threeDynaC[i][j][k] = 1;
+									break;
+								case 2:
+									threeDynaM[i][j][k] = threeDynaM[i][j][k-1];
+									threeDynaC[i][j][k] = 2;
+									break;
+							}
+						}
+					}
+				}
+			}
+			for(int i=1;i<=A.length();i++){
+				for(int j=1;j<=B.length();j++){
+					for(int k=1;k<=C.length();k++){
+						
+					}	
+					}
+					}
+		}
+	private int getMaxIndex(int i, int j, int k) {
+		// TODO Auto-generated method stub
+		int count=0;
+		int max=i;
+		if(max<j){
+			max=j;
+			count=1;
+		}
+		if(max<k){
+			max=k;
+			count=2;
+		}
+		return count;
+	}
+	//根据矩阵求LCS
+	public String getThreeLCS(String A,int stringBLg,int stringCLg){
+		StringBuffer buffer = new StringBuffer();
+		Stack<Character> lcs = new Stack<Character>();
+		int mark;
+		int i=A.length();
+		int j= stringBLg;
+		int k =stringCLg;
+		while(i>0&&j>0&&k>0){
+			mark = threeDynaC[i][j][k];
+			switch(mark){
+				case 0:
+					i--;
+					break;
+				case 1:
+					j--;
+					break;
+				case 2:
+					k--;
+					break;
+				case 3:
+					lcs.push(A.charAt(i-1));
+					i--;
+					j--;
+					k--;
+					break;
+				default:
+					System.out.println("查找LCS出现异常,i="+i+",j="+j+",k="+k);
+					break;
+			}
+		}
+		while(!lcs.isEmpty()){
+			buffer.append(lcs.pop());
+		}
+		return buffer.toString();
+	}
+}
+
+
+package lcs;
+
+import java.util.Stack;
+
+public class getTwoLCSMatrixByDyna {
+	int twoDynaM[][];
+	int twoDynaC[][];//记录走向(i,j,k),0是(i-1,j,k)，1是(i,j-1,k)，2是(i,j,k-1),3是(i-1,j-1,k-1)
+	//求解三维的字符串的矩阵
+	public getTwoLCSMatrixByDyna(String A,String B){
+			twoDynaM = new int[A.length()+1][B.length()+1];
+			twoDynaC = new int[A.length()+1][B.length()+1];
+			int index;
+			for(int i=0;i<=A.length();i++){//初始化
+				for(int j=0;j<=B.length();j++){	
+						twoDynaM[i][j] = 0;
+						twoDynaC[i][j] = -1;
+				}
+			}
+			for(int i=1;i<=A.length();i++){
+				for(int j=1;j<=B.length();j++){
+						if(A.charAt(i-1) == B.charAt(j-1)){
+							twoDynaM[i][j] = twoDynaM[i-1][j-1]+1;
+							twoDynaC[i][j] = 2;
+						}else{
+							index = getMaxIndex(twoDynaM[i-1][j], twoDynaM[i][j-1]);
+							switch(index){
+								case 0:
+									twoDynaM[i][j] = twoDynaM[i-1][j];
+									twoDynaC[i][j] = 0;
+									break;
+								case 1:
+									twoDynaM[i][j] = twoDynaM[i][j-1];
+									twoDynaC[i][j] = 1;
+									break;
+							}
+						}
+					
+				}
+			}
+//			System.out.print(" |");
+////			System.out.print("  ");
+//			for(int i=0;i<B.length();i++){
+//				System.out.print(B.charAt(i)+" ");
+//			}
+//			System.out.println();
+//			for(int i=1;i<=A.length();i++){
+//				System.out.print(A.charAt(i-1)+"|");
+//				for(int j=1;j<=B.length();j++){
+//					System.out.print(twoDynaC[i][j]+" ");	
+//					}
+//				System.out.println();
+//					}
+		}
+	private int getMaxIndex(int i, int j) {
+		// TODO Auto-generated method stub
+		int count=0;
+		int max=i;
+		if(max<j){
+			max=j;
+			count=1;
+		}
+		return count;
+	}
+	//根据矩阵求LCS
+	public String getTwoLCS(String A,int stringBLg){
+		StringBuffer buffer = new StringBuffer();
+		Stack<Character> lcs = new Stack<Character>();
+		int mark;
+		int i=A.length();
+		int j= stringBLg;
+		while(i>0&&j>0){
+			mark = twoDynaC[i][j];
+			switch(mark){
+				case 0:
+					i--;
+					break;
+				case 1:
+					j--;
+					break;
+				case 2:
+					lcs.push(A.charAt(i-1));
+					i--;
+					j--;
+					break;
+				default:
+					System.out.println("查找LCS出现异常,i="+i+",j="+j);
+					break;
+			}
+		}
+		while(!lcs.isEmpty()){
+			buffer.append(lcs.pop());
+		}
+		return buffer.toString();
+	}
+}
+
+
+package lcs;
+
+import java.util.Random;
+
+public class radomstring {
+	public static String getRandomString(int length) { //length表示生成字符串的长度
+	    String base = "abcdefghijklmnopqrstuvwxyz";   
+	    Random random = new Random();   
+	    StringBuffer sb = new StringBuffer();   
+	    for (int i = 0; i < length; i++) {   
+	        int number = random.nextInt(base.length());   
+	        sb.append(base.charAt(number));   
+	    }   
+	    return sb.toString();   
+	 }   
+
+}
+
+
